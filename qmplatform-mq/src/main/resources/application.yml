@@ -1,0 +1,14 @@
+spring:
+  application:
+    name: mq
+  rabbitmq:
+    host: 127.0.0.1
+    port: 5672
+    username: qmplatform
+    password: qmplatform
+    publisher-confirms: true
+    publisher-returns: true
+server:
+  port: 9004
+  servlet:
+    context-path: /mq

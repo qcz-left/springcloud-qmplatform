@@ -1,0 +1,3 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+  com.qcz.qmplatform.baseweb.starter.BaseWebAutoConfiguration,\
+  com.qcz.qmplatform.baseweb.starter.GlobalTransactionAutoConfiguration
