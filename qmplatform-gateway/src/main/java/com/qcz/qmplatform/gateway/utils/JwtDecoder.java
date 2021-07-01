@@ -1,4 +1,4 @@
-package com.qcz.qmplatform.common.utils;
+package com.qcz.qmplatform.gateway.utils;
 
 import cn.hutool.json.JSONUtil;
 import com.qcz.qmplatform.common.bean.TokenPayload;

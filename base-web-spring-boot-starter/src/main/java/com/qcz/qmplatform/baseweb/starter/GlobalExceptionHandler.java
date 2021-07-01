@@ -1,7 +1,8 @@
-package com.qcz.qmplatform.common.exception;
+package com.qcz.qmplatform.baseweb.starter;
 
 import com.qcz.qmplatform.common.bean.ResponseResult;
 import com.qcz.qmplatform.common.constant.ResponseCode;
+import com.qcz.qmplatform.common.exception.CommonException;
 import org.springframework.boot.web.servlet.error.ErrorController;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.oauth2.common.exceptions.UnauthorizedUserException;

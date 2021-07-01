@@ -34,7 +34,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
         String userId = sysUser.get("userid");
         List<String> authorities = authorizationMapper.queryAuthoritiesByUserId(userId);
-        HashSet<GrantedAuthority> grantedAuthorities = new HashSet<GrantedAuthority>();
+        HashSet<GrantedAuthority> grantedAuthorities = new HashSet<>();
         for (String auth : authorities) {
         	grantedAuthorities.add(new SimpleGrantedAuthority(auth));
 		}

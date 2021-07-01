@@ -2,9 +2,8 @@ package com.qcz.qmplatform.gateway.config;
 
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.http.HttpUtil;
+import com.qcz.qmplatform.common.utils.SecureUtils;
 import io.netty.buffer.ByteBufAllocator;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
@@ -26,7 +25,13 @@ import reactor.core.publisher.Mono;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
@@ -35,7 +40,9 @@ import java.util.regex.Pattern;
 @Component
 public class AuthorizeFilterConfig implements GlobalFilter, Ordered {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(AuthorizeFilterConfig.class);
+    private static final String ENC_REG = "ENC\\([a-zA-Z0-9\\+/=]+\\)";
+
+    private static final Pattern ENC_PATTERN = Pattern.compile(ENC_REG);
 
     @Value("${custom.gateway.allowed-urls}")
     private List<String> allowedUrls;
@@ -90,17 +97,14 @@ public class AuthorizeFilterConfig implements GlobalFilter, Ordered {
                     }
                     HttpHeaders httpHeaders = request.getHeaders();
                     // 执行XSS清理
-                    LOGGER.info("{} - [{}] XSS处理前body参数：{}", method, requestPath, bodyString);
-                    bodyString = stripXSS(bodyString);
-                    LOGGER.info("{} - [{}] 过滤后的body参数：{}", method, requestPath, bodyString);
+                    bodyString = stripXSS(stripENC(bodyString));
                     Map<String, List<String>> decodeParams = HttpUtil.decodeParams(request.getURI().getQuery(), "UTF-8");
                     Map<String, List<String>> newParams = new HashMap<>();
                     for (String paramKey : decodeParams.keySet()) {
                         List<String> newVal = new ArrayList<>();
                         for (String paramVal : decodeParams.get(paramKey)) {
-                            String newParamVal = stripXSS(paramVal);
+                            String newParamVal = stripXSS(stripENC(paramVal));
                             newVal.add(newParamVal);
-                            LOGGER.info("{} - [{}] 过滤后的query参数：{}={}", method, requestPath, paramKey, newParamVal);
                         }
                         newParams.put(paramKey, newVal);
                     }
@@ -158,6 +162,17 @@ public class AuthorizeFilterConfig implements GlobalFilter, Ordered {
         DataBuffer buffer = nettyDataBufferFactory.allocateBuffer(bytes.length);
         buffer.write(bytes);
         return buffer;
+    }
+
+    private String stripENC(String value) {
+        if (value != null) {
+            Matcher matcher = ENC_PATTERN.matcher(value);
+            while (matcher.find()) {
+                String group = matcher.group();
+                value = value.replaceFirst(ENC_REG, SecureUtils.rsaDecrypt(group.substring(4, group.length() - 1)));
+            }
+        }
+        return value;
     }
 
     private String stripXSS(String value) {

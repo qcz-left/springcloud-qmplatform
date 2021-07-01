@@ -2,12 +2,17 @@ package com.qcz.qmplatform.common.utils;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.core.io.ClassPathResource;
 
 import java.io.*;
+
+import static cn.hutool.core.io.FileUtil.file;
 
 public class FileUtils extends org.apache.commons.io.FileUtils {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(FileUtils.class);
+
+    public static final String WEB_PATH = getWebPath();
 
     /**
      * 将对象写到文件
@@ -64,5 +69,51 @@ public class FileUtils extends org.apache.commons.io.FileUtils {
             CloseUtils.close(fis);
         }
         return null;
+    }
+    /**
+     * 如果文件不存在就创建，如果父目录不存在也一并创建
+     */
+    public static void createIfNotExists(File file) {
+        if (!file.exists()) {
+            File parentFile = file.getParentFile();
+            if (!parentFile.exists()) {
+                parentFile.mkdirs();
+            }
+            try {
+                file.createNewFile();
+            } catch (IOException e) {
+                LOGGER.error(null, e);
+            }
+        }
+    }
+
+    public static void createIfNotExists(String filePath) {
+        createIfNotExists(file(filePath));
+    }
+
+    /**
+     * 如果文件夹不存在就创建
+     */
+    public static void createDirIfNotExists(File file) {
+        if (!file.exists()) {
+            file.mkdirs();
+        }
+    }
+
+    public static void createDirIfNotExists(String dirPath) {
+        createDirIfNotExists(file(dirPath));
+    }
+
+    private static String getWebPath() {
+        try {
+            String webPath = new ClassPathResource("").getFile().getCanonicalPath();
+            if (webPath.contains("target\\classes")) {
+                return new File("../").getCanonicalPath();
+            }
+            return webPath;
+        } catch (IOException e) {
+            LOGGER.error(null, e);
+        }
+        return "/";
     }
 }

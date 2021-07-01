@@ -1,4 +1,4 @@
-package com.qcz.qmplatform.common.exception;
+package com.qcz.qmplatform.baseweb.starter;
 
 import cn.hutool.json.JSONUtil;
 import com.qcz.qmplatform.common.bean.ResponseResult;
@@ -18,7 +18,7 @@ import java.io.IOException;
 
 public class AuthExceptionEntryPoint implements AuthenticationEntryPoint {
 
-    private static final Logger logger = LoggerFactory.getLogger(AuthExceptionEntryPoint.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(AuthExceptionEntryPoint.class);
 
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) {
@@ -33,10 +33,10 @@ public class AuthExceptionEntryPoint implements AuthenticationEntryPoint {
             } else {
                 errorMsg = "token缺失！";
             }
-            logger.error("msg: {}; code: {}", errorMsg, ResponseCode.UNAUTHORIZED.code());
+            LOGGER.error("msg: {}; code: {}", errorMsg, ResponseCode.UNAUTHORIZED.code());
             response.getWriter().write(JSONUtil.toJsonStr(new ResponseResult(ResponseCode.UNAUTHORIZED, errorMsg, null)));
         } catch (IOException e) {
-            e.printStackTrace();
+            LOGGER.error("", e);
         }
     }
 

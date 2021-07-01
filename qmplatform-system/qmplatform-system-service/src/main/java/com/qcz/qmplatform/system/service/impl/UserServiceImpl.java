@@ -4,7 +4,7 @@ import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.lang.Assert;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.qcz.qmplatform.common.utils.PasswordUtils;
+import com.qcz.qmplatform.common.utils.SecureUtils;
 import com.qcz.qmplatform.common.utils.StringUtils;
 import com.qcz.qmplatform.system.domain.User;
 import com.qcz.qmplatform.system.domain.UserOrganization;
@@ -87,7 +87,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
             userId = StringUtils.uuid();
             user.setId(userId);
             if (StringUtils.isNotBlank(user.getPassword())) {
-                user.setPassword(PasswordUtils.encode(user.getPassword()));
+                user.setPassword(SecureUtils.aesEncrypt(user.getPassword()));
             }
             insertUserOrg(userId, user.getOrganizationIds());
             return save(user);
@@ -101,8 +101,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         insertUserRole(userId, user.getRoleIds());
         // 处理密码
         String newPwd;
-        if (PasswordUtils.passwordChange(password)) {
-            newPwd = PasswordUtils.encode(password);
+        if (SecureUtils.passwordChanged(password)) {
+            newPwd = SecureUtils.aesEncrypt(password);
         } else {
             newPwd = getById(user.getId()).getPassword();
         }

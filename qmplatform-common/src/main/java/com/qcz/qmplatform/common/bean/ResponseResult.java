@@ -77,7 +77,15 @@ public class ResponseResult<T> {
     }
 
     public boolean isOk() {
-        return code == ResponseCode.SUCCESS.code()
-                || code == ResponseCode.TOKEN_WILL_EXPIRE.code();
+        return code == ResponseCode.SUCCESS.code();
+    }
+
+    @Override
+    public String toString() {
+        return "ResponseResult{" +
+                "code=" + code +
+                ", msg='" + msg + '\'' +
+                ", data=" + data +
+                '}';
     }
 }

@@ -1,8 +1,6 @@
 package com.qcz.qmplatform.baseweb.starter;
 
 import com.qcz.qmplatform.common.constant.Constant;
-import com.qcz.qmplatform.common.exception.AuthExceptionEntryPoint;
-import com.qcz.qmplatform.common.exception.GlobalExceptionHandler;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -64,6 +62,11 @@ public class BaseWebAutoConfiguration extends ResourceServerConfigurerAdapter {
     @Bean
     public GlobalExceptionHandler globalExceptionHandler() {
         return new GlobalExceptionHandler();
+    }
+
+    @Bean
+    public RequestAspect requestAspect() {
+        return new RequestAspect();
     }
 
 }

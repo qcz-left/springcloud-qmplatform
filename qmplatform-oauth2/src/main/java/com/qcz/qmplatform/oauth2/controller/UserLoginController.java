@@ -33,9 +33,9 @@ public class UserLoginController {
 
     @GetMapping("/login")
     public ResponseResult<?> login(String username, String password, String validateCode) {
-        if (!StringUtils.equals(ValidateCodeCacheUtils.get(username), validateCode)) {
+        /*if (!StringUtils.equals(ValidateCodeCacheUtils.get(username), validateCode)) {
             return ResponseResult.error("请填写正确的验证码！", null);
-        }
+        }*/
         AuthToken authToken = authService.login(username, password, AuthGrantType.PASSWORD, clientId, clientSecret);
         if (authToken != null) {
             return ResponseResult.ok("登录成功", authToken);

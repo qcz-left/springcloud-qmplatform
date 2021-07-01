@@ -8,14 +8,21 @@ import com.qcz.qmplatform.common.bean.PageResultHelper;
 import com.qcz.qmplatform.common.bean.PrivCode;
 import com.qcz.qmplatform.common.bean.ResponseResult;
 import com.qcz.qmplatform.common.utils.DateUtils;
-import com.qcz.qmplatform.common.utils.PasswordUtils;
+import com.qcz.qmplatform.common.utils.SecureUtils;
 import com.qcz.qmplatform.common.utils.StringUtils;
 import com.qcz.qmplatform.system.domain.User;
 import com.qcz.qmplatform.system.service.IUserService;
 import com.qcz.qmplatform.system.vo.UserVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Arrays;
 
@@ -72,7 +79,7 @@ public class UserController {
         user.setId(StringUtils.uuid());
         user.setCreateTime(DateUtils.getCurrTimestamp());
         if (StringUtils.isNotBlank(user.getPassword())) {
-            user.setPassword(PasswordUtils.encode(user.getPassword()));
+            user.setPassword(SecureUtils.aesEncrypt(user.getPassword()));
         }
         return ResponseResult.ok(userService.save(user));
     }
@@ -81,8 +88,8 @@ public class UserController {
     public ResponseResult<Boolean> updateUser(@RequestBody UserVo user) {
         String password = user.getPassword();
         String newPwd;
-        if (PasswordUtils.passwordChange(password)) {
-            newPwd = PasswordUtils.encode(password);
+        if (SecureUtils.passwordChanged(password)) {
+            newPwd = SecureUtils.aesEncrypt(password);
         } else {
             newPwd = userService.getById(user.getId()).getPassword();
         }
