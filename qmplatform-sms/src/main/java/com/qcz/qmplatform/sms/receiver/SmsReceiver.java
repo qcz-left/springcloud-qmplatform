@@ -17,11 +17,11 @@ import org.springframework.stereotype.Component;
 @RabbitListener(queues = RabbitConstant.QUEUE_SMS)
 public class SmsReceiver {
 
-    private static final Logger logger = LoggerFactory.getLogger(SmsReceiver.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(SmsReceiver.class);
 
     @RabbitHandler
     public void smsRabbitHandler(SmsDTO smsDTO) {
-        logger.info("Receive sms queue information: {}", smsDTO);
+        LOGGER.info("Receive sms queue information: {}", smsDTO);
         try {
             SmsConfig smsConfig = new SmsConfig();
             BeanUtil.copyProperties(smsDTO, smsConfig);
@@ -29,7 +29,7 @@ public class SmsReceiver {
 
             NotifyServiceFactory.build(SmsUtils.getNotifyServiceClass(smsDTO.getSmsProviderCode()), smsConfig).send();
         } catch (Exception e) {
-            logger.error("Failed to send sms！", e);
+            LOGGER.error("Failed to send sms！", e);
         }
     }
 }

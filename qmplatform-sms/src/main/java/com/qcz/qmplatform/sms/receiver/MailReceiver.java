@@ -14,18 +14,18 @@ import org.springframework.stereotype.Component;
 @RabbitListener(queues = RabbitConstant.QUEUE_MAIL)
 public class MailReceiver {
 
-    private static final Logger logger = LoggerFactory.getLogger(MailReceiver.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(MailReceiver.class);
 
     @Autowired
     private MailNotifyService mailNotifyService;
 
     @RabbitHandler
     public void mailRabbitHandler(MailDTO mailDTO) {
-        logger.info("Receive mail queue information: {}", mailDTO);
+        LOGGER.info("Receive mail queue information: {}", mailDTO);
         try {
             mailNotifyService.send(mailDTO);
         } catch (Exception e) {
-            logger.error("Failed to send email！", e);
+            LOGGER.error("Failed to send email！", e);
         }
     }
 }
