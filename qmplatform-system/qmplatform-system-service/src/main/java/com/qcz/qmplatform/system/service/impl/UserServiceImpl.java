@@ -87,7 +87,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
             userId = StringUtils.uuid();
             user.setId(userId);
             if (StringUtils.isNotBlank(user.getPassword())) {
-                user.setPassword(SecureUtils.aesEncrypt(user.getPassword()));
+                user.setPassword(SecureUtils.accountEncrypt(user.getPassword()));
             }
             insertUserOrg(userId, user.getOrganizationIds());
             return save(user);
@@ -102,7 +102,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         // 处理密码
         String newPwd;
         if (SecureUtils.passwordChanged(password)) {
-            newPwd = SecureUtils.aesEncrypt(password);
+            newPwd = SecureUtils.accountEncrypt(password);
         } else {
             newPwd = getById(user.getId()).getPassword();
         }

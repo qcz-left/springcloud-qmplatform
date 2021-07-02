@@ -79,7 +79,7 @@ public class UserController {
         user.setId(StringUtils.uuid());
         user.setCreateTime(DateUtils.getCurrTimestamp());
         if (StringUtils.isNotBlank(user.getPassword())) {
-            user.setPassword(SecureUtils.aesEncrypt(user.getPassword()));
+            user.setPassword(SecureUtils.accountEncrypt(user.getPassword()));
         }
         return ResponseResult.ok(userService.save(user));
     }
@@ -89,7 +89,7 @@ public class UserController {
         String password = user.getPassword();
         String newPwd;
         if (SecureUtils.passwordChanged(password)) {
-            newPwd = SecureUtils.aesEncrypt(password);
+            newPwd = SecureUtils.accountEncrypt(password);
         } else {
             newPwd = userService.getById(user.getId()).getPassword();
         }

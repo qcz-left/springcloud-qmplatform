@@ -24,6 +24,9 @@ import java.lang.reflect.Field;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * 请求参数日志打印
+ */
 @Aspect
 public class RequestAspect {
 

@@ -96,7 +96,7 @@ public class AuthorizeFilterConfig implements GlobalFilter, Ordered {
                         bodyString = new String(oldBytes, StandardCharsets.UTF_8);
                     }
                     HttpHeaders httpHeaders = request.getHeaders();
-                    // 执行XSS清理
+                    // 执行加密参数的解密、XSS过滤清理
                     bodyString = stripXSS(stripENC(bodyString));
                     Map<String, List<String>> decodeParams = HttpUtil.decodeParams(request.getURI().getQuery(), "UTF-8");
                     Map<String, List<String>> newParams = new HashMap<>();
@@ -164,6 +164,9 @@ public class AuthorizeFilterConfig implements GlobalFilter, Ordered {
         return buffer;
     }
 
+    /**
+     * 解密ENC(xxxxx)加密参数
+     */
     private String stripENC(String value) {
         if (value != null) {
             Matcher matcher = ENC_PATTERN.matcher(value);
@@ -175,6 +178,9 @@ public class AuthorizeFilterConfig implements GlobalFilter, Ordered {
         return value;
     }
 
+    /**
+     * XSS攻击字符过滤
+     */
     private String stripXSS(String value) {
         if (value != null) {
             // NOTE: It's highly recommended to use the ESAPI library and

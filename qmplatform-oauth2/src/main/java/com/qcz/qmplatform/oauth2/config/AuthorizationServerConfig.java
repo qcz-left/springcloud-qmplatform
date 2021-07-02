@@ -8,7 +8,6 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.config.annotation.configurers.ClientDetailsServiceConfigurer;
 import org.springframework.security.oauth2.config.annotation.web.configuration.AuthorizationServerConfigurerAdapter;
@@ -23,7 +22,7 @@ import org.springframework.security.rsa.crypto.KeyStoreKeyFactory;
 import javax.sql.DataSource;
 
 @Configuration
-public class AuthorizationServerConfiguration extends AuthorizationServerConfigurerAdapter {
+public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdapter {
 
     @Autowired
     private UserDetailsService userDetailsService;
@@ -61,7 +60,7 @@ public class AuthorizationServerConfiguration extends AuthorizationServerConfigu
 
     @Bean
     public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
+        return new MyPasswordEncoder();
     }
 
     @Bean
@@ -71,8 +70,6 @@ public class AuthorizationServerConfiguration extends AuthorizationServerConfigu
 
     /**
      * 使用非对称加密算法来对Token进行签名
-     *
-     * @return
      */
     @Bean
     public JwtAccessTokenConverter jwtAccessTokenConverter() {

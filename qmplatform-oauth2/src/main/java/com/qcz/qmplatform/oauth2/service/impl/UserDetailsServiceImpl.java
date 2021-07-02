@@ -23,7 +23,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     JwtAccessTokenConverter jwtAccessTokenConverter;
 
     @Autowired
-    private AuthorizationMapper authorizationMapper;
+    AuthorizationMapper authorizationMapper;
 
     @Override
     public UserDetails loadUserByUsername(String loginName) throws UsernameNotFoundException {
